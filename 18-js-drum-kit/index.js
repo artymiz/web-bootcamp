@@ -11,20 +11,29 @@ const tom4 = new Audio("sounds/tom-4.mp3");
 
 // setup event listeners for each drum button
 const buttonAudioMapping = {
-  w: crash,
-  a: kick,
-  s: snare,
-  d: tom1,
-  j: tom2,
-  k: tom3,
-  l: tom4,
+  w: tom1,
+  a: tom2,
+  s: tom3,
+  d: tom4,
+  j: crash,
+  k: kick,
+  l: snare,
 };
+
+function playButtonAnimation(buttonText) {
+  const activeButton = document.querySelector(`.${buttonText}`);
+  activeButton.classList.add("pressed");
+  setTimeout(() => {
+    activeButton.classList.remove("pressed");
+  }, 100);
+}
 
 // setup event listeners for each drum button
 document.querySelectorAll(`[class*="drum"]`).forEach((button) => {
   button.addEventListener("click", function () {
     const buttonText = this.innerHTML;
     buttonAudioMapping[buttonText].play();
+    playButtonAnimation(buttonText);
   });
 });
 
@@ -32,6 +41,7 @@ Object.entries(buttonAudioMapping).forEach(([key, value]) => {
   addEventListener("keydown", (e) => {
     if (e.key === key) {
       value.play();
+      playButtonAnimation(key);
     }
   });
 });
