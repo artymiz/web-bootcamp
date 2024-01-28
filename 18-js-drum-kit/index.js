@@ -15,9 +15,9 @@ const buttonAudioMapping = {
   a: tom2,
   s: tom3,
   d: tom4,
-  j: crash,
-  k: kick,
-  l: snare,
+  j: snare,
+  k: crash,
+  l: kick,
 };
 
 function playButtonAnimation(buttonText) {
