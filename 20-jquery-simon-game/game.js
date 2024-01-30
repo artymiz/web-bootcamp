@@ -12,8 +12,8 @@ var gamePattern = [];
 var userClickedPattern = [];
 var level = 0;
 var gameStarted = false;
-const LEVEL_REPEAT = 4;
-var STARTING_SEQUENCE_LENGTH = 4;
+const LEVEL_REPEAT = 3;
+var STARTING_SEQUENCE_LENGTH = 3;
 var sequenceLength = STARTING_SEQUENCE_LENGTH;
 
 function playSound(fileName) {
@@ -79,14 +79,15 @@ function gameOver() {
   setTimeout(() => {
     $("body").removeClass("game-over");
   }, 200);
-  $("#level-title").text(`Game Over on level ${level}, Press Any Key to Restart`);
+  $("#beats-title").text("Game Over, Press Any Key to Restart");
   level = 0;
   gameStarted = false;
 }
 
 function updateLevel() {
-  $("#level-title").text(`Level ${level}`);
   sequenceLength = STARTING_SEQUENCE_LENGTH + Math.floor(level / LEVEL_REPEAT);
+  $("#level-title").text(`Level ${level}`);
+  $("#beats-title").text(`Beats: ${sequenceLength}`);
 }
 
 function playRound() {
