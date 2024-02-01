@@ -9,7 +9,7 @@ password defined in the `.env` file.
 
 Install the node dependencies and add the `.env` file which holds the password.
 
-```
+```sh
 npm install
 touch .env
 echo "PASSWORD=pass" > .env
@@ -27,7 +27,7 @@ PASSWORD=<your password here>
 Now you can run the server with `node` or `nodemon` to see it in action.  
 The express app will run in the browser with the url `localhost:3000`.
 
-```
+```sh
 node index.js
 ```
 
