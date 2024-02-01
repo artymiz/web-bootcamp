@@ -1,6 +1,6 @@
 # Basic Express.js form validation
 
-A simple http server with GET/POST routes.
+A simple http server with GET/POST routes.  
 The [secret page](public/secret.html) reveals when the user enters the same
 password defined in the `.env` file.
 
@@ -15,14 +15,16 @@ touch .env
 echo "PASSWORD=pass" > .env
 ```
 
+
 The default password is `pass` in the snippet above, feel free to change
-to any value that you like as long as you are using the format.
+to any value using this format:
 
 ```
 PASSWORD=<your password here>
 ```
 
-Now you run the server with `node` or `nodemon` and see it in action.
+
+Now you can run the server with `node` or `nodemon` to see it in action.  
 The express app will run in the browser with the url `localhost:3000`.
 
 ```
