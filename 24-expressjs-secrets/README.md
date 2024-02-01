@@ -1,7 +1,7 @@
 # Basic Express.js form validation
 
 A simple http server with GET/POST routes.
-The [/public/secret.html](secret page) reveals when the user enters the same
+The [secret page](public/secret.html) reveals when the user enters the same
 password defined in the `.env` file.
 
 
