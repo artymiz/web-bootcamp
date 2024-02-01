@@ -1,0 +1,31 @@
+# Basic Express.js form validation
+
+A simple http server with GET/POST routes.
+The [/public/secret.html](secret page) reveals when the user enters the same
+password defined in the `.env` file.
+
+
+## How to Run
+
+Install the node dependencies and add the `.env` file which holds the password.
+
+```
+npm install
+touch .env
+echo "PASSWORD=pass" > .env
+```
+
+The default password is `pass` in the snippet above, feel free to change
+to any value that you like as long as you are using the format.
+
+```
+PASSWORD=<your password here>
+```
+
+Now you run the server with `node` or `nodemon` and see it in action.
+The express app will run in the browser with the url `localhost:3000`.
+
+```
+node index.js
+```
+
