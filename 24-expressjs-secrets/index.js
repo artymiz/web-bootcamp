@@ -16,6 +16,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 var userAuthenticated = false;
 
 const checkPassword = (req, _, next) => {
+  // no longer authorized if home page is requested again
+  userAuthenticated = false;
   if (req.body.password === process.env.PASSWORD) {
     userAuthenticated = true;
   }
@@ -38,7 +40,7 @@ app.post('/check', (req, res) => {
   if (userAuthenticated) {
     res.sendFile(secretPath);
   } else {
-    res.sendFile(homePath);
+    res.redirect('/');
   }
 });
 
