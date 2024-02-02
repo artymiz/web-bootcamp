@@ -48,17 +48,38 @@
   </style>
 </head>
 
+
 <body>
+  <div style="align-items:start;">
+    <% if (locals.token) { %>
+      <p>Token: <%=token%></p>
+    <% } %>
+
+    <% if (locals.apiKey) { %>
+      <p>API Key: <%=apiKey%></p>
+    <% } %>
+  </div>
+
+  <form id="namepass">
+      <input type="text" name="username" placeholder="username" value="<%= locals.username %>"/>
+      <input type="text" name="password" placeholder="password" value="<%= locals.password %>"/>
+    <button type="submit" id="basicAuth" formaction="/register" formmethod="post" id="register">register</button>
+    <button type="submit" id="apiKey" formaction="/get-apikey" formmethod="get">get apiKey</button>
+    <button type="submit" id="bearerToken" formaction="/get-token" formmethod="post" id="get-token">get token</button>
+  </form>
+
   <button type="submit" id="noAuth" onclick="window.location.href='/noAuth'">No Auth</button>
   <button id="basicAuth" onclick="window.location.href='/basicAuth'">Basic Auth</button>
   <button id="apiKey" onclick="window.location.href='/apiKey'">API Key</button>
   <button id="bearerToken" onclick="window.location.href='/bearerToken'">Bearer Token</button>
 
-  <div class="response-area">
-    <p>
-      <%=content%>
-    </p>
-  </div>
+  <% if (locals.content) { %>
+    <div class="response-area">
+      <p>
+        <%=content%>
+      </p>
+    </div>
+  <% } %>
 </body>
 
 </html>
