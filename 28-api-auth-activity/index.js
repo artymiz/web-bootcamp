@@ -79,6 +79,7 @@ app.get("/noAuth", (_, res) => {
   //TODO 2: Use axios to hit up the /random endpoint
   //The data you get back should be sent to the ejs file as "content"
   //Hint: make sure you use JSON.stringify to turn the JS object from axios into a string.
+  console.log("NO-AUTH");
   try {
     axios.get(`${API_URL}random`).then((response) => {
       res.render("index.ejs", getResponseObject(JSON.stringify(response.data)));
@@ -103,6 +104,7 @@ app.get("/basicauth", (_, res) => {
       },
     });
   */
+  console.log(`BASIC-AUTH name: ${yourUsername}, password: ${yourPassword}`);
   try {
     console.log(`BASIC-AUTH name: ${yourUsername}, password: ${yourPassword}`),
     axios.get(`${API_URL}all?page=2`, {
@@ -124,6 +126,7 @@ app.get("/apiKey", (_, res) => {
   //TODO 4: Write your code here to hit up the /filter endpoint
   //Filter for all secrets with an embarassment score of 5 or greater
   //HINT: You need to provide a query parameter of apiKey in the request.
+  console.log("GET-API-KEY");
   try {
     axios.get(`${API_URL}filter?apiKey=${yourAPIKey}&score=5`).then((response) => {
       if (response.status === 200) {
@@ -132,7 +135,7 @@ app.get("/apiKey", (_, res) => {
         res.render("index.ejs", getResponseObject("Error: " + response.status));
       }
     }).catch((reason) => {
-      displayAxiosError("GETAPIKEY", reason, res);
+      displayAxiosError("GET-API-KEY", reason, res);
     });
   } catch (error) {
     res.status(404).send("Error: " + error.message);
@@ -151,8 +154,7 @@ app.get("/bearerToken", (_, res) => {
     },
   });
   */
-  console.log(`BEARER-TOKEN name: ${yourUsername}, password: ${yourPassword}`);
-  console.log(`token: ${yourBearerToken}`);
+  console.log(`BEARER-TOKEN token: ${yourBearerToken}`);
   try {
     axios.get(`${API_URL}secrets/42`, {
       headers: {
@@ -161,7 +163,7 @@ app.get("/bearerToken", (_, res) => {
     }).then((response) => {
       res.render("index.ejs", getResponseObject(JSON.stringify(response.data)));
     }).catch((reason) => {
-      displayAxiosError("BEARERTOKEN", reason, res);
+      displayAxiosError("BEARER-TOKEN", reason, res);
     });
   } catch (error) {
     res.status(404).send("Error: " + error.message);
