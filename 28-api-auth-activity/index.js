@@ -2,7 +2,6 @@ import express from "express";
 import axios from "axios";
 
 const app = express();
-app.use(express.urlencoded({ extended: true }));
 const port = 3000;
 const API_URL = "https://secrets-api.appbrewery.com/";
 
@@ -12,19 +11,26 @@ var yourPassword = "";
 var yourAPIKey = "";
 var yourBearerToken = "";
 
+function setNamePass(req, _, next) {
+  yourUsername = req.body.username || yourUsername;
+  yourPassword = req.body.password || yourPassword;
+  next();
+}
+
+app.use(express.urlencoded({ extended: true }));
+app.use(setNamePass);
+
 app.get("/", (_, res) => {
   const resObj = getResponseObject("API Response");
   res.render("index.ejs", resObj);
 });
 
-app.post("/register", (req, res) => {
-  yourUsername = req.body.username;
-  yourPassword = req.body.password;
+app.post("/register", (_, res) => {
   try {
-    axios.post(`${API_URL}register`, {
-      username: req.body.password,
-      password: req.body.username,
-    }).then((response) => {
+    axios.post(`${API_URL}register`, new URLSearchParams({
+      username: yourUsername,
+      password: yourPassword,
+    })).then((response) => {
       console.log(`REGISTER username: ${yourUsername}, password: ${yourPassword}`);
       res.render("index.ejs", getResponseObject(JSON.stringify(response.data)));
     }).catch((reason) => {
@@ -36,15 +42,13 @@ app.post("/register", (req, res) => {
   }
 });
 
-app.post("/get-token", (req, res) => {
-  yourUsername = req.body.username,
-  yourPassword = req.body.password;
+app.post("/get-token", (_, res) => {
   console.log(`GET-TOKEN name: ${yourUsername}, password: ${yourPassword}`);
   try {
-    axios.post(`${API_URL}get-auth-token`, {
-      username: req.body.username,
-      password: req.body.password,
-    }).then((response) => {
+    axios.post(`${API_URL}get-auth-token`, new URLSearchParams({
+      username: yourUsername,
+      password: yourPassword,
+    })).then((response) => {
       yourBearerToken = response.data.token;
       console.log(`token received: ${response.data.token}`);
       res.render("index.ejs", getResponseObject(JSON.stringify(response.data)));
@@ -107,7 +111,7 @@ app.get("/basicauth", (_, res) => {
         password: yourPassword,
       },
     }).then((response) => {
-      res.render( "index.ejs", getResponseObject(json.stringify(response.data)) );
+      res.render( "index.ejs", getResponseObject(JSON.stringify(response.data)) );
     }).catch((reason) => {
       displayAxiosError("BASIC-AUTH", reason, res);
     });
@@ -147,7 +151,7 @@ app.get("/bearerToken", (_, res) => {
     },
   });
   */
-  console.log(`BEARERTOKEN name: ${yourUsername}, password: ${yourPassword}`);
+  console.log(`BEARER-TOKEN name: ${yourUsername}, password: ${yourPassword}`);
   console.log(`token: ${yourBearerToken}`);
   try {
     axios.get(`${API_URL}secrets/42`, {
