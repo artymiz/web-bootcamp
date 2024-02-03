@@ -18,56 +18,53 @@ app.get("/", (_, res) => {
 });
 
 app.post("/register", (req, res) => {
-  yourPassword = req.body.password;
   yourUsername = req.body.username;
-  console.log(`username: ${req.body.username}, password: ${req.body.password}`);
-  res.render("index.ejs", getResponseObject("Registered Successfully"));
-  res.redirect("/");
-  // res.send({ username: yourUsername, password: yourPassword })
-  // try {
-  //   axios.post(`${API_URL}register`, {
-  //     username: req.body.username,
-  //     password: req.body.password,
-  //   }).then((response) => {
-  //       yourUsername = req.body.username;
-  //       yourPassword = req.body.password;
-  //       console.log(`username: ${yourUsername}, password: ${yourPassword}`);
-  //       if (response.status === 200) {
-  //         res.render("index.ejs", { content: "Registration successful." });
-  //       }
-  //   });
-  // } catch (error) {
-  //   console.log(`register error: ${error.message}`);
-  //   // res.status(404).send("Error: " + error.message);
-  // }
+  yourPassword = req.body.password;
+  try {
+    axios.post(`${API_URL}register`, {
+      username: req.body.password,
+      password: req.body.username,
+    }).then((response) => {
+      console.log(`REGISTER username: ${yourUsername}, password: ${yourPassword}`);
+      res.render("index.ejs", getResponseObject(JSON.stringify(response.data)));
+    }).catch((reason) => {
+      displayAxiosError("REGISTER", reason, res);
+    });
+  } catch (error) {
+    console.log(`register error: ${error.message}`);
+    res.status(404).send("Error: " + error.message);
+  }
 });
 
 app.post("/get-token", (req, res) => {
+  yourUsername = req.body.username,
   yourPassword = req.body.password;
-  yourUsername = req.body.username;
-  yourBearerToken = "bearerToken";
-  console.log(req.body);
-  res.redirect("/");
-  // res.send({ username: yourUsername, password: yourPassword })
-  // try {
-  //   axios.post(`${API_URL}get-auth-token`, {
-  //     username: req.body.username,
-  //     password: req.body.password,
-  //   }).then((response) => {
-  //     console.log(`token: ${response.data.token}`);
-  //     res.render("index.ejs", { token: response.data.token });
-  //   });
-  // } catch (error) {
-  //   res.status(404).send("Error: " + error.message);
-  // }
+  console.log(`GET-TOKEN name: ${yourUsername}, password: ${yourPassword}`);
+  try {
+    axios.post(`${API_URL}get-auth-token`, {
+      username: req.body.username,
+      password: req.body.password,
+    }).then((response) => {
+      yourBearerToken = response.data.token;
+      console.log(`token received: ${response.data.token}`);
+      res.render("index.ejs", getResponseObject(JSON.stringify(response.data)));
+    }).catch((reason) => {
+      displayAxiosError("GET-TOKEN", reason, res);
+    });
+  } catch (error) {
+    res.status(404).send("Error: " + error.message);
+  }
 });
 
 app.get("/get-apikey", (_, res) => {
+  console.log(`GET-APIKEY`);
   try {
     axios.get(`${API_URL}generate-api-key`).then((response) => {
       yourAPIKey = response.data.apiKey;
-      console.log(`apiKey: ${yourAPIKey}`);
-      res.render("index.ejs", getResponseObject("API key received"));
+      console.log(`apikey received: ${yourAPIKey}`);
+      res.render("index.ejs", getResponseObject(JSON.stringify(response.data)));
+    }).catch((reason) => {
+      displayAxiosError("GETAPIKEY", reason, res);
     });
   } catch (error) {
     res.status(404).send("Error: " + error.message);
@@ -80,11 +77,9 @@ app.get("/noAuth", (_, res) => {
   //Hint: make sure you use JSON.stringify to turn the JS object from axios into a string.
   try {
     axios.get(`${API_URL}random`).then((response) => {
-      if (response.status === 200) {
-        res.render( "index.ejs", getResponseObject(JSON.stringify(response.data)) );
-      } else {
-        console.log(`Error: ${response.status}`);
-      }
+      res.render("index.ejs", getResponseObject(JSON.stringify(response.data)));
+    }).catch ((reason) => {
+      displayAxiosError("NOAUTH", reason, res);
     });
   } catch (error) {
     res.status(404).send("Error: " + error.message);
@@ -105,6 +100,7 @@ app.get("/basicauth", (_, res) => {
     });
   */
   try {
+    console.log(`BASIC-AUTH name: ${yourUsername}, password: ${yourPassword}`),
     axios.get(`${API_URL}all?page=2`, {
       auth: {
         username: yourUsername,
@@ -112,6 +108,8 @@ app.get("/basicauth", (_, res) => {
       },
     }).then((response) => {
       res.render( "index.ejs", getResponseObject(json.stringify(response.data)) );
+    }).catch((reason) => {
+      displayAxiosError("BASIC-AUTH", reason, res);
     });
   } catch (error) {
     res.status(404).send("error: " + error.message);
@@ -124,7 +122,13 @@ app.get("/apiKey", (_, res) => {
   //HINT: You need to provide a query parameter of apiKey in the request.
   try {
     axios.get(`${API_URL}filter?apiKey=${yourAPIKey}&score=5`).then((response) => {
-      res.render("index.ejs", getResponseObject(JSON.stringify(response.data)) );
+      if (response.status === 200) {
+        res.render("index.ejs", getResponseObject(JSON.stringify(response.data)) );
+      } else {
+        res.render("index.ejs", getResponseObject("Error: " + response.status));
+      }
+    }).catch((reason) => {
+      displayAxiosError("GETAPIKEY", reason, res);
     });
   } catch (error) {
     res.status(404).send("Error: " + error.message);
@@ -143,13 +147,21 @@ app.get("/bearerToken", (_, res) => {
     },
   });
   */
-  axios.get(`${API_URL}secrets/42`, {
-    headers: {
-      Authorization: `Bearer ${yourBearerToken}`,
-    },
-  }).then((response) => {
-    res.render("index.ejs", getResponseObject(JSON.stringify(response.data)));
-  });
+  console.log(`BEARERTOKEN name: ${yourUsername}, password: ${yourPassword}`);
+  console.log(`token: ${yourBearerToken}`);
+  try {
+    axios.get(`${API_URL}secrets/42`, {
+      headers: {
+        Authorization: `Bearer ${yourBearerToken}`,
+      },
+    }).then((response) => {
+      res.render("index.ejs", getResponseObject(JSON.stringify(response.data)));
+    }).catch((reason) => {
+      displayAxiosError("BEARERTOKEN", reason, res);
+    });
+  } catch (error) {
+    res.status(404).send("Error: " + error.message);
+  }
 });
 
 app.listen(port, () => {
@@ -165,3 +177,13 @@ const getResponseObject = ((resContent) => {
 
   return resObj;
 });
+
+const displayAxiosError = ((labelText, axiosError, res) => {
+  console.log(`Axios Error: ${axiosError.message}`);
+  res.render(
+    "index.ejs", getResponseObject(
+    `${labelText} ${axiosError.response.status}:
+      ${JSON.stringify(axiosError.response.data)}`
+  ));
+});
+
