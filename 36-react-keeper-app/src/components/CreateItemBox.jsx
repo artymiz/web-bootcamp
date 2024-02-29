@@ -8,7 +8,7 @@ export default function CreateItemBox({ onAdd }) {
     setNote(prevValue => {
       return {
         ...prevValue,
-        [name]: value.trim()
+        [name]: value
       };
     });
   }

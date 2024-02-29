@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './Header';
 import Note from './Note';
 import CreateItemBox from './CreateItemBox';
 import Footer from './Footer';
 
 export default function App() {
-  let [notes, setNotes] = useState([]);
+  const storedNotes = JSON.parse(localStorage.getItem('notes')) || [];
+  let [notes, setNotes] = useState(storedNotes);
 
   function createNote(newNote) {
     setNotes(prevValue => {
@@ -18,6 +19,10 @@ export default function App() {
       return prevValue.filter((_, index) => { return index !== id; });
     });
   }
+
+  useEffect(() => {
+    localStorage.setItem('notes', JSON.stringify(notes));
+  }, [notes]);
 
   return (
     <div>
